@@ -224,3 +224,88 @@ printf("Enter the number of resources: ");
 }
 
 _____________________________________________________________________________________________________
+
+>>SLIP17_Q1 : Write the program to calculate minimum number of resources needed to avoid deadlock.
+
+#include <stdio.h>
+#define MAX_PROCESSES 10
+#define MAX_RESOURCES 10
+
+int available[MAX_RESOURCES];
+int maximum[MAX_PROCESSES][MAX_RESOURCES];
+int allocation[MAX_PROCESSES][MAX_RESOURCES];
+int need[MAX_PROCESSES][MAX_RESOURCES];
+int n_processes, n_resources;
+
+void calculateNeed() {
+    for (int i = 0; i < n_processes; i++) {
+        for (int j = 0; j < n_resources; j++) {
+            need[i][j] = maximum[i][j] - allocation[i][j];
+        }
+    }
+}
+int isSafe(int process, int request[]) {
+    for (int i = 0; i < n_resources; i++) {
+        if (request[i] > need[process][i] || request[i] > available[i]) {
+            return 0; // Requested resources exceed need or available resources
+        }
+    }
+    return 1;
+}
+int main() {
+    // Input: Number of processes and resources
+    printf("Enter number of processes: ");
+    scanf("%d", &n_processes);
+    printf("Enter number of resources: ");
+    scanf("%d", &n_resources);
+
+    // Input: Maximum resources needed by each process
+    printf("Enter maximum resources for each process:\n");
+    for (int i = 0; i < n_processes; i++) {
+        printf("Process %d: ", i);
+        for (int j = 0; j < n_resources; j++) {
+            scanf("%d", &maximum[i][j]);
+        }
+    }
+
+    // Input: Allocated resources for each process
+    printf("Enter allocated resources for each process:\n");
+    for (int i = 0; i < n_processes; i++) {
+        printf("Process %d: ", i);
+        for (int j = 0; j < n_resources; j++) {
+            scanf("%d", &allocation[i][j]);
+        }
+    }
+    // Input: Available resources
+    printf("Enter available resources: ");
+    for (int i = 0; i < n_resources; i++) {
+        scanf("%d", &available[i]);
+
+    }
+
+    // Calculate Need matrix
+    calculateNeed();
+    // Check if request is safe
+    int process;
+    int request[MAX_RESOURCES];
+    printf("Enter process number requesting resources: ");
+    scanf("%d", &process);
+    printf("Enter requested resources for process %d: ", process);
+    for (int i = 0; i < n_resources; i++) {
+
+        scanf("%d", &request[i]);
+
+    }
+    if (isSafe(process, request)) {
+
+        printf("Request is safe and can be granted.\n");
+
+    } else {
+
+        printf("Request is unsafe and cannot be granted.\n");
+
+    }
+    return 0;
+
+}
+
