@@ -1,0 +1,226 @@
+>>SLIP1_Q1   &    >>SLIP5_Q1   &    >>SLIP13_Q1 :
+
+/*Write a program that demonstrates the use of nice() system call. After a child process is started
+using fork(), assign higher priority to the child using nice() system */
+
+#include<stdio.h>
+#include<unistd.h>
+int main()
+{
+	int pid,retnice,i;
+	pid=fork();
+	for(i=0;i<3;i++)
+	{
+		if(pid==0)
+		{
+			retnice=nice(-5);
+			printf("Child gets higher CPU priority%d\n",retnice);
+			sleep(1);
+		}
+		else
+		{
+			retnice=nice(4);
+			printf("Parent gets lower CPU Priority%d\n",retnice);
+			sleep(1);
+		}
+	}
+}
+
+_____________________________________________________________________________________________
+>>SLIP2_Q1   &    >>SLIP11_Q1:
+
+/*Create a child process using fork(), display parent and child process id. Child process will
+display the message “Hello World” and the parent process should display “Hi”*/
+
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/types.h>
+
+int main()
+{
+  int pid;
+  pid=fork();
+  if(pid==0)
+  {
+    printf("child process pid=%d\n",getpid());
+    printf("Hello World");
+  }
+  else
+  {
+    printf("parent process pid=%d\n",getpid());
+    printf("Hi\n");
+  }
+}
+
+ _________________________________________________________________________________________________
+>>SLIP3_Q1 :
+
+/*Creating a child process using the command exec(). Note down process ids of the parent
+and the child processes, check whether the control is given back to the parent after the child process terminates.*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+int main() {
+    int pid;
+    pid = fork(); 
+    if (pid < 0) {
+        perror("Fork failed");
+        exit(EXIT_FAILURE);
+    }
+     else if (pid == 0) 
+    {
+        printf("Child Process: PID = %d, Parent PID = %d\n", getpid(), getppid());
+        execl("/bin/ls", "ls", "-l", NULL);
+        perror("Exec failed");
+        exit(EXIT_FAILURE);
+    } 
+    else 
+    {
+        printf("Parent Process: PID = %d, Child PID = %d\n", getpid(), pid);
+        printf("Child process has terminated.\n");
+    }
+    printf("Control is back to the parent process.\n");
+}
+
+____________________________________________________________________________________________
+>>SLIP4_Q1   &   >>SLIP10_Q1   &   >>SLIP12_Q1:
+
+//Write a program to illustrate the concept of orphan process ( Using fork() and sleep())
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+int main() {
+    int pid;
+    pid = fork();
+    if (pid < 0) 
+    {
+        perror("Fork failed");
+        exit(EXIT_FAILURE);
+    } 
+    else if (pid == 0) 
+    {
+        printf("Child Process: PID = %d, Parent PID = %d\n", getpid(), getppid());
+        sleep(5); 
+        printf("Child Process: PID = %d, Parent PID = %d after sleep()\n", getpid(), getppid());
+    } 
+    else 
+    {
+        printf("Parent Process: PID = %d, Child PID = %d\n", getpid(), pid);
+        printf("Parent Process is going to exit\n");
+        exit(EXIT_SUCCESS);
+    }
+}
+
+_____________________________________________________________________________________________
+>>SLIP6_Q1   &   >>SLIP14_Q1    &     >>SLIP16_Q1:
+
+//Write a program to find the execution time taken for execution of a given set of instructions (use clock() function) 
+
+#include<stdio.h>
+#include<time.h>
+int main()
+{
+	int start,end;
+	double cpu_time_used;
+
+	start=clock();
+	printf("Enter the character:\n");
+
+	getchar();
+ 	end=clock();
+
+	cpu_time_used=((double) (end-start))/CLOCKS_PER_SEC;
+       printf("\n CPU time used: %f Second:\n",cpu_time_used);
+
+}
+
+______________________________________________________________________________________
+>>SLIP7_Q1   &   >>SLIP9_Q1   &   >>SLIP15_Q1   &    >>SLIP19_Q1   &    >>SLIP20_Q1 :
+
+/* Write a program to create a child process using fork().The parent should goto sleep state and
+child process should begin its execution. In the child process, use execl() to execute the “ls” command */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+int main() {
+    int pid;
+    pid = fork();
+    if (pid < 0) 
+    {
+        perror("Fork failed");
+        exit(EXIT_FAILURE);
+    }
+     else if (pid == 0) 
+    {
+        printf("Child Process: PID = %d\n", getpid());
+        execl("/bin/ls", "ls", "-l", NULL);
+        perror("Exec failed");
+        exit(EXIT_FAILURE);
+    } 
+    else 
+    {
+        printf("Parent Process: PID = %d\n", getpid());
+        sleep(3);
+ 	printf("Parent Process: Child process has terminated.\n");
+    }
+}
+	
+
+______________________________________________________________________________________________
+>>SLIP8_Q1   &   >>SLIP18_Q1 :
+
+//Write a C program to accept the number of process and resources and find the need matrix content and display it.
+   
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int np, nr, i, j;
+
+    printf("Enter the Number of processes: ");
+    scanf("%d", &np);
+printf("Enter the number of resources: ");
+    scanf("%d", &nr);
+
+    int allocation[np][nr];
+    int need[np][nr];
+    int max[np][nr];
+
+    printf("Enter the allocation matrix:\n");
+    for (i = 0; i < np; i++) {
+        for (j = 0; j < nr; j++) {
+            scanf("%d", &allocation[i][j]);
+        }
+    }
+ printf("Enter the Maximum matrix:\n");
+    for (i = 0; i < np; i++) {
+        for (j = 0; j < nr; j++) {
+            scanf("%d", &max[i][j]);
+        }
+    }
+
+    printf("Need of process (max - allocation):\n");
+    for (i = 0; i < np; i++) {
+        for (j = 0; j < nr; j++) {
+            need[i][j] = max[i][j] - allocation[i][j];
+        }
+    }
+ printf("Need Of matrix:\n");
+    for (i = 0; i < np; i++) {
+        for (j = 0; j < nr; j++) {
+            printf("%d ", need[i][j]);
+        }
+        printf("\n");
+    }  
+}
+
+_____________________________________________________________________________________________________
